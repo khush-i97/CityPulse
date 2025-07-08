@@ -1,14 +1,15 @@
-# FlowSight: Smart City Traffic Prediction Pipeline
+# FlowSight: Real-Time Traffic Congestion Forecasting Pipeline
 
-FlowSight is a smart city traffic forecasting pipeline that simulates and predicts congestion patterns using real-time stream processing and machine learning. This project is ideal for beginners looking to explore data engineering, PySpark, Kafka, and deployment with FastAPI.
+FlowSight is a smart city traffic forecasting pipeline that simulates and predicts congestion patterns using real-time stream processing and machine learning. This project is ideal for beginners looking to explore end-to-end data engineering, model training, deployment, and interactive visualization.
 
 ## ✨ Project Highlights
 
 - Real-time traffic data simulation using Kafka
-- Stream processing with PySpark Structured Streaming
+- Stream processing with PySpark Structured Streaming or pure‑Python consumer
 - Parquet-based data lake (bronze layer)
-- Traffic speed prediction using a trained Random Forest model
-- FastAPI deployment for serving predictions
+- Traffic speed prediction with a Random Forest model
+- REST API for live predictions via FastAPI
+- Interactive Streamlit dashboard with map visualization
 
 ---
 
@@ -18,23 +19,25 @@ FlowSight is a smart city traffic forecasting pipeline that simulates and predic
 
 - Python 3.10+
 - Java 17 (Temurin or Oracle JDK)
-- Spark 3.5+
-- Hadoop (winutils.exe for Windows)
-- Docker Desktop (for Kafka)
+- (Optional) Apache Spark 3.5+ for streaming
+- (Windows) Hadoop winutils.exe for native IO
+- Docker Desktop (for Kafka & Zookeeper)
 - Git
 
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/FlowSight.git
-cd FlowSight
+git clone https://github.com/your-username/flowsight.git
+cd flowsight
 ```
 
-### Create a Virtual Environment
+### Create and Activate Virtual Environment
 
 ```bash
 py -m venv venv
-venv\Scripts\activate  # Windows
+venv\Scripts\activate       # Windows
+# or
+source venv/bin/activate    # macOS/Linux
 ```
 
 ### Install Python Dependencies
@@ -43,102 +46,134 @@ venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
-### Setup Java and Hadoop for PySpark (Windows users)
+### Configure Java & Hadoop on Windows
 
-1. Ensure Java 17 is installed and `JAVA_HOME` is set:
-   ```bash
-   echo %JAVA_HOME%
-   ```
-2. Download [winutils.exe](https://github.com/steveloughran/winutils) for Hadoop 3.3.5
-3. Create folder: `C:\hadoop\bin` and place `winutils.exe` inside
-4. Add these environment variables:
+1. Verify Java 17 and `JAVA_HOME`:
+   ```powershell
+echo %JAVA_HOME%
+```
+2. Download [winutils.exe](https://github.com/steveloughran/winutils) for Hadoop 3.3.5.
+3. Create `C:\hadoop\bin`, place `winutils.exe` inside.
+4. Set environment variables:
    - `HADOOP_HOME=C:\hadoop`
-   - Add `%HADOOP_HOME%\bin` to `PATH`
+   - Add `%HADOOP_HOME%\bin` to your `PATH`
 
 ---
 
-## 🚗 Step-by-Step Pipeline Execution
+## 🚗 Pipeline Execution
 
-### Step 1: Start Kafka via Docker
+### 1. Start Kafka & Zookeeper
 
 ```bash
-docker-compose up -d
+docker compose up -d
+docker ps
 ```
 
-### Step 2: Simulate Traffic Data
+This exposes Kafka on `localhost:9092` and ZK on `localhost:2181`.
+
+### 2. Simulate Traffic Data
 
 ```bash
 python traffic_simulator.py
 ```
 
-This generates mock sensor data (e.g., speed, road ID, timestamp) and sends it to Kafka topic `traffic`.
+Produces mock sensor messages to Kafka topic `traffic`.
 
-### Step 3: Stream to Bronze Layer
+### 3. Stream to Bronze Layer
 
+**Linux/macOS:**
 ```bash
 python stream_to_parquet.py
 ```
 
-Consumes Kafka stream and writes Parquet files to `data/bronze/`.
+**Windows Windows-native IO issues?** Use pure‑Python:
+```bash
+python consumer_to_parquet.py
+```
 
-### Step 4: Train the ML Model
+Parquet files land in `data/bronze/` or `data/bronze_py/`.
+
+### 4. Train the ML Model
 
 ```bash
 python train_model.py
 ```
 
-Trains a `RandomForestRegressor` to predict future traffic speed.
+Trains a `RandomForestRegressor` and saves the model to `model.joblib`.
 
-### Step 5: Inspect Features (optional)
+### 5. Inspect Features (optional)
 
 ```bash
 python inspect_features.py
 ```
 
-Verifies which features were used for training (used later for prediction).
+Displays the feature names expected by the saved model.
 
-### Step 6: Run the FastAPI App
+### 6. Launch the FastAPI Service
 
 ```bash
-uvicorn app:app --reload
+python -m uvicorn app:app --reload
 ```
 
-Visit `http://127.0.0.1:8000/docs` to test the `/predict` endpoint.
+Browse <http://127.0.0.1:8000/docs> to test the `/predict` endpoint.
 
 ---
 
-## 📊 Sample Input to `/predict`
+## 📊 Sample `/predict` Usage
 
+**Request**
 ```json
 {
-  "speed_mean_3": 48.3,
-  "speed_lag1": 46.7,
-  "speed_next": 50.2,
-  "sensor_roadA": 1,
-  "sensor_roadB": 0,
-  "sensor_roadC": 0
+  "sensor": "roadA",
+  "speed": 48.3,
+  "timestamp": 1627810200
+}
+```
+
+**Response**
+```json
+{
+  "predicted_speed_next": 50.1
 }
 ```
 
 ---
 
-## 🌟 Conclusion
+## 🌐 Interactive Dashboard
 
-FlowSight demonstrates how to connect streaming systems with ML to build an end-to-end traffic prediction system. It taught me how to debug Spark, handle schema mismatches, structure data pipelines, and deploy a basic ML model using FastAPI.
+You can start the dashboard UI as follows:
 
-### 📄 Technologies Used
+```powershell
+# If the streamlit.exe launcher stub is broken, bypass it with:
+python -m streamlit run dashboard.py
+# Or if your stub is working, simply run:
+streamlit run dashboard.py
+```
 
-- Python, Pandas, Scikit-learn
-- Kafka + Docker
-- PySpark Structured Streaming
-- FastAPI + Uvicorn
-- Parquet, winutils
+This will open the dashboard at <http://localhost:8501>. Use the sidebar to pick a sensor, enter speed, and view predicted congestion on a map.
 
 ---
 
-## 🌐 Find me on LinkedIn
+## 🌟 Conclusion
 
-If you found this interesting or helpful, connect with me: [https://www.](https://www.linkedin.com/in/khushi-gangrade/)[linkedin.com/in/khushi-gangrade/](https://www.linkedin.com/in/khushi-gangrade/)
+FlowSight ties together:
+
+- **Streaming ingestion** (Kafka)
+- **Data lake** (Parquet)
+- **ML training** (scikit‑learn)
+- **API serving** (FastAPI)
+- **Visualization** (Streamlit & Pydeck)
+
+Key learning points:
+
+- Handling Spark on Windows vs pure‑Python fallback
+- Avoiding feature/target mismatches in production models
+- Containerizing Kafka & ZK for local development
+- Deploying fast, interactive dashboards
+
+### 📄 Technologies Used
+
+Python · Pandas · scikit‑learn · Kafka · Docker · PySpark · FastAPI · Uvicorn · Streamlit · Pydeck · Parquet · Hadoop winutils
 
 ---
 
@@ -148,5 +183,5 @@ MIT License
 
 ---
 
-Happy learning! 🚀
+Happy coding! 🚦✨
 

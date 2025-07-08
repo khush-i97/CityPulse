@@ -15,7 +15,7 @@ model = joblib.load("model.joblib")
 # We need to recreate the same features you trained on
 SENSOR_COLUMNS = [col for col in model.feature_names_in_ if col.startswith("sensor_")]
 
-app = FastAPI(title="CityPulse Congestion Predictor")
+app = FastAPI(title="FlowSight Congestion Predictor")
 
 # ─── 3) Health check endpoint ───────────────────────────────────
 @app.get("/ping")

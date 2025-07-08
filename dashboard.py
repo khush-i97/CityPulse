@@ -3,9 +3,9 @@ import requests
 import pandas as pd
 import time
 
-st.set_page_config(page_title="CityPulse Dashboard", layout="wide")
+st.set_page_config(page_title="FlowSight Dashboard", layout="wide")
 
-st.title("🛣️ CityPulse Live Congestion Dashboard")
+st.title("🛣️ FlowSight Live Congestion Dashboard")
 
 SENSOR_CHOICES = ["roadA", "roadB", "roadC"]
 

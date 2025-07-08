@@ -1,6 +1,6 @@
-# CityPulse: Smart City Traffic Prediction Pipeline
+# FlowSight: Smart City Traffic Prediction Pipeline
 
-CityPulse is a smart city traffic forecasting pipeline that simulates and predicts congestion patterns using real-time stream processing and machine learning. This project is ideal for beginners looking to explore data engineering, PySpark, Kafka, and deployment with FastAPI.
+FlowSight is a smart city traffic forecasting pipeline that simulates and predicts congestion patterns using real-time stream processing and machine learning. This project is ideal for beginners looking to explore data engineering, PySpark, Kafka, and deployment with FastAPI.
 
 ## ✨ Project Highlights
 
@@ -26,8 +26,8 @@ CityPulse is a smart city traffic forecasting pipeline that simulates and predic
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/citypulse.git
-cd citypulse
+git clone https://github.com/your-username/FlowSight.git
+cd FlowSight
 ```
 
 ### Create a Virtual Environment
@@ -124,7 +124,7 @@ Visit `http://127.0.0.1:8000/docs` to test the `/predict` endpoint.
 
 ## 🌟 Conclusion
 
-CityPulse demonstrates how to connect streaming systems with ML to build an end-to-end traffic prediction system. It taught me how to debug Spark, handle schema mismatches, structure data pipelines, and deploy a basic ML model using FastAPI.
+FlowSight demonstrates how to connect streaming systems with ML to build an end-to-end traffic prediction system. It taught me how to debug Spark, handle schema mismatches, structure data pipelines, and deploy a basic ML model using FastAPI.
 
 ### 📄 Technologies Used
 

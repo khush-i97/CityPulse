@@ -151,6 +151,9 @@ streamlit run dashboard.py
 ```
 
 This will open the dashboard at <http://localhost:8501>. Use the sidebar to pick a sensor, enter speed, and view predicted congestion on a map.
+<img width="1895" height="842" alt="image" src="https://github.com/user-attachments/assets/4678c6b3-614b-4b76-b266-740d9b467659" />
+
+
 
 ---
 
